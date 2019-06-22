@@ -35,16 +35,24 @@
 		let fontSizeUpLimit = 100;
 		let fontSizeDownLimit = 10;
 
-		var colorPicker = new iro.ColorPicker('#color-picker-container', {width: 150});
+		var fontColorPicker = new iro.ColorPicker('#color-picker-container', {width: 150});
 		function onColorChange(color, changes) {
-  			// print the color's new hex value to the developer console
+  			let radios = document.getElementsByName('target');
+  			let val;
+  			for(var i = 0; i < radios.length; i++){
+  				if(radios[i].checked)
+  					val = radios[i].value;
+  			}
   			if(lastFocus != null){
-  				lastFocus.style.color = color.hexString;	
+  				if(val == 0)
+  					lastFocus.style.color = color.hexString;
+  				else if(val == 1)
+  					lastFocus.style.background = color.hexString;
   			}
 		}
 
-		// listen to a color picker's color:change event
-		colorPicker.on('color:change', onColorChange);
+		fontColorPicker.on('color:change', onColorChange);
+
 
 		function setInputFilter(textbox, inputFilter) {
 		  	["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop"].forEach(function(event) {
@@ -144,8 +152,31 @@
 		    	event.target.style.color = "gray";
 		    	dm_empty[index] = true;
 		    }
-		    document.getElementById('font-size').value = '';
 		    return false;
+		}
+		function boldFont(event){
+			event.stopPropagation();
+			if(lastFocus != null){
+				let bold = window.getComputedStyle(lastFocus, null).getPropertyValue('font-weight');
+				if(bold == 400){
+					lastFocus.style.fontWeight = 'bold';
+				}
+				else{
+					lastFocus.style.fontWeight = 'normal';
+				}
+			}
+		}
+		function italicFont(event){
+			event.stopPropagation();
+			if(lastFocus != null){
+				let italic = window.getComputedStyle(lastFocus, null).getPropertyValue('font-style');
+				if(italic === 'normal'){
+					lastFocus.style.fontStyle = 'italic';
+				}
+				else{
+					lastFocus.style.fontStyle = 'normal';
+				}
+			}
 		}
 		function addImage(event){
 			let div = document.createElement('div');
@@ -469,11 +500,16 @@
 			<li><input type="file" name="filename" accept="image/gif, image/jpeg, image/png" onchange="readURL(this);"></li>
 			<li><div id="img-preview"></div>
 			<li>
-				<div id="color-picker-container" style="display: inline-block;"></div>
+				<div id="color-picker-container" style="display: inline-block;"></div><br>
+				<input type="radio" name="target" value="0" checked>Font
+				<input type="radio" name="target" value="1">Background
+				<br>
+				<button onclick="boldFont(event)">B</button>
+				<button onclick="italicFont(event)" style="font-style: italic;">I</button>
 			</li>
 			<li>
 				<div style="display: inline-flex; flex-direction: row; border: 1px solid lightblue" id="font-resize">
-					<input type="text" onchange="resizeFont();" id="font-size">
+					<input type="text" onchange="resizeFont(event);" id="font-size">
 					<div style="display: inline-flex; flex-direction: column; padding: 0; justify-content: space-around;">
 						<button class="arrow-btn" onclick="sizeUpFont(event)">&#708;</button>
 						<button class="arrow-btn" onclick="sizeDownFont(event)">&#709;</button>
