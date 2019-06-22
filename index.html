@@ -31,10 +31,16 @@
 
 		let dm_empty = [];
 		let ids = 0;
+		let lastFocus;
+		let fontSizeUpLimit = 100;
+		let fontSizeDownLimit = 10;
+
 		var colorPicker = new iro.ColorPicker('#color-picker-container', {width: 150});
 		function onColorChange(color, changes) {
   			// print the color's new hex value to the developer console
-  			console.log(color.hexString);
+  			if(lastFocus != null){
+  				lastFocus.style.color = color.hexString;	
+  			}
 		}
 
 		// listen to a color picker's color:change event
@@ -108,19 +114,25 @@
 			ids++;
 			dragable.addEventListener('dragstart', drag_start, false);
 			dragable.addEventListener('dblclick', focusText, false);
+			dragable.addEventListener('click', function(event){event.stopPropagation();}, false);
 			dragable.addEventListener('blur', blurText, false);
 			document.getElementById('working-area').appendChild(dragable);
 		}
 		function focusText(event){
 			event = event || window.event;
-			let index = parseInt(event.target.id);
+			let elem = event.target;
+			let index = parseInt(elem.id);
+			lastFocus = this;
+			var style = window.getComputedStyle(elem, null).getPropertyValue('font-size');
+			var fontSize = parseInt(style);
+			document.getElementById('font-size').value = fontSize; 
 			if(dm_empty[index]){
-				event.target.innerHTML = "";
-				event.target.style.color = "black";
+				elem.innerHTML = "";
+				elem.style.color = "black";
 				dm_empty[index] = false;
 			}
-			event.target.contentEditable = true;
-			event.target.focus();
+			elem.contentEditable = true;
+			elem.focus();
 			return false;
 		}
 		function blurText(event){
@@ -132,13 +144,13 @@
 		    	event.target.style.color = "gray";
 		    	dm_empty[index] = true;
 		    }
+		    document.getElementById('font-size').value = '';
 		    return false;
 		}
 		function addImage(event){
 			let div = document.createElement('div');
 			div.draggable = true;
 			let img = document.createElement('img');
-			//img.src = 'img/picture.jpg';
 			img.src = document.getElementById('preview').src;
 			img.classList.add('image');
 			let value = event.target.getAttribute('value', 0);
@@ -166,7 +178,6 @@
 		function layout(event){
 			let div;
 			let iter = event.target.getAttribute('value', 0);
-			console.log(iter);
 			let workingArea = document.getElementById('working-area');
 			while(workingArea.hasChildNodes()){
 				workingArea.removeChild(workingArea.lastChild);
@@ -195,29 +206,6 @@
 			else
 				span.classList.add('hidden');
 		}
-		window.onload = function(){ 
-			document.getElementById('addText').addEventListener('click', addTextBox, false);
-			let btns = document.getElementsByClassName('addImage');
-			for(var i = 0; i < btns.length; i++){
-				btns[i].addEventListener('click', addImage, false);
-			}
-			document.getElementById('one-part').addEventListener('click', layout, false);
-			document.getElementById('two-part').addEventListener('click', layout, false);
-			document.getElementById('three-part').addEventListener('click', layout, false);
-			document.body.addEventListener('keydown', function(e) {
-    			if(e.key == "Escape"){
-    				document.activeElement.blur();
-    			}
-    			if(e.key == "Delete"){
-    				if(document.activeElement.classList.contains("dragme"))
-    				document.activeElement.parentNode.removeChild(document.activeElement);
-    			}
-			});
-			setInputFilter(document.getElementById("font-size"), function(value) {
-  				return /^\d*$/.test(value) && (value === "" || parseInt(value) <= 50);
-			});
-		}
-
 		function readURL(input) {
 	        if (input.files && input.files[0]) {
 	            var reader = new FileReader();
@@ -238,6 +226,53 @@
 	            reader.readAsDataURL(input.files[0]);
 	        }
 	    }
+	    function sizeDownFont(event){
+	    	if(document.getElementById('font-size').value > fontSizeDownLimit){
+		    	document.getElementById('font-size').value--;
+		    	resizeFont(event);
+		    }
+	    }
+	    function sizeUpFont(event){
+	    	if(document.getElementById('font-size').value < fontSizeUpLimit){
+		    	document.getElementById('font-size').value++;
+		    	resizeFont(event);
+		    }
+	    }
+	    function resizeFont(event){
+	    	event.stopPropagation();
+	    	if(document.getElementById('font-size').value < fontSizeDownLimit){
+	    		document.getElementById('font-size').value = fontSizeDownLimit;
+	    	}
+	    	if(lastFocus){
+	    		let fontS = document.getElementById('font-size').value;
+	    		lastFocus.style.fontSize = fontS + 'px';
+	    		setTimeout(function() {lastFocus.contentEditable = true; lastFocus.focus();}, 10);
+	    	}
+	    	return false;
+	    }
+		window.onload = function(){ 
+			document.getElementById('addText').addEventListener('click', addTextBox, false);
+			let btns = document.getElementsByClassName('addImage');
+			for(var i = 0; i < btns.length; i++){
+				btns[i].addEventListener('click', addImage, false);
+			}
+			document.getElementById('one-part').addEventListener('click', layout, false);
+			document.getElementById('two-part').addEventListener('click', layout, false);
+			document.getElementById('three-part').addEventListener('click', layout, false);
+			//document.getElementById('font-resize').addEventListener('click', resizeFont, false);
+			document.body.addEventListener('keydown', function(e) {
+    			if(e.key == "Escape"){
+    				document.activeElement.blur();
+    			}
+    			if(e.key == "Delete"){
+    				if(document.activeElement.classList.contains("dragme"))
+    				document.activeElement.parentNode.removeChild(document.activeElement);
+    			}
+			});
+			setInputFilter(document.getElementById("font-size"), function(value) {
+  				return /^\d*$/.test(value) && (value === "" || (parseInt(value) <= fontSizeUpLimit));
+			});
+		}
  	</script>
  	<style type="text/css">
 		.dragme { 
@@ -257,6 +292,7 @@
 		    width: 200px;
 		    padding: 8px;
 		    color: gray;
+		    word-wrap: break-word;
 		}
 		.text-box:focus{
 			background: white;
@@ -274,6 +310,7 @@
 		}
 		.image-box{
 			padding: 10px;
+			width: 500px;
 		}
 		.drag-area1{
 			position: relative;
@@ -435,17 +472,17 @@
 				<div id="color-picker-container" style="display: inline-block;"></div>
 			</li>
 			<li>
-				<div style="display: inline-flex; flex-direction: row; border: 1px solid lightblue">
-					<input type="text" onchange="console.log('stefan');" id="font-size">
+				<div style="display: inline-flex; flex-direction: row; border: 1px solid lightblue" id="font-resize">
+					<input type="text" onchange="resizeFont();" id="font-size">
 					<div style="display: inline-flex; flex-direction: column; padding: 0; justify-content: space-around;">
-						<button class="arrow-btn" onclick="document.getElementById('font-size').value++;">&#708;</button>
-						<button class="arrow-btn" onclick="document.getElementById('font-size').value--;">&#709;</button>
+						<button class="arrow-btn" onclick="sizeUpFont(event)">&#708;</button>
+						<button class="arrow-btn" onclick="sizeDownFont(event)">&#709;</button>
 					</div>
 				</div>
 			</li>
 		</ul>
 	</div>
-	<div id="working-area">
+	<div id="working-area" onclick="lastFocus = null;">
 		
 	</div>
  </body>
