@@ -254,6 +254,30 @@
 	    	}
 	    	return false;
 	    }
+	    function boldFont(event){
+			event.stopPropagation();
+			if(lastFocus != null){
+				let bold = window.getComputedStyle(lastFocus, null).getPropertyValue('font-weight');
+				if(bold == 400){
+					lastFocus.style.fontWeight = 'bold';
+				}
+				else{
+					lastFocus.style.fontWeight = 'normal';
+				}
+			}
+		}
+		function italicFont(event){
+			event.stopPropagation();
+			if(lastFocus != null){
+				let italic = window.getComputedStyle(lastFocus, null).getPropertyValue('font-style');
+				if(italic === 'normal'){
+					lastFocus.style.fontStyle = 'italic';
+				}
+				else{
+					lastFocus.style.fontStyle = 'normal';
+				}
+			}
+		}
 	    function setBgImage(input, side){
 	    	if (input.files && input.files[0]) {
 	            var reader = new FileReader();
