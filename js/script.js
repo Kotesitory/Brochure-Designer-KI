@@ -29,14 +29,21 @@
 		let fontSizeDownLimit = 10;
 
 		var colorPicker = new iro.ColorPicker('#color-picker-container', {width: 150});
-		function onColorChange(color, changes) {
-  			// print the color's new hex value to the developer console
-  			if(lastFocus != null){
-  				lastFocus.style.color = color.hexString;	
-  			}
+		function onColorChange(color, changes) {	
+  			let radios = document.getElementsByName('target');	
+  			let val;	
+  			for(var i = 0; i < radios.length; i++){	
+  				if(radios[i].checked)	
+  					val = radios[i].value;	
+  			}	
+  			if(lastFocus != null){	
+  				if(val == 0)	
+  					lastFocus.style.color = color.hexString;	
+  				else if(val == 1)	
+  					lastFocus.style.background = color.hexString;	
+  			}	
 		}
 
-		// listen to a color picker's color:change event
 		colorPicker.on('color:change', onColorChange);
 
 		function setInputFilter(textbox, inputFilter) {
