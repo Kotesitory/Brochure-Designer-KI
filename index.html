@@ -5,6 +5,9 @@
 	<meta charset=utf-8 />
 	<script src="js/colorpicker.js"></script>
  	<script src="js/script.js"></script>
+ 	<script type="text/javascript" src="js/html2canvas.js"></script>
+ 	<script type="text/javascript" src="js/jspdf.min.js"></script>
+ 	<script src="js/html2pdf.bundle.min.js"></script>
  	<link rel="stylesheet" type="text/css" href="css/styles.css">
  </head>
 <body style="height: 100%;">
@@ -48,9 +51,10 @@
 			<li><input type="file" name="frong-img" accept="image/gif, image/jpeg, image/png" onchange="setBgImage(this, 'front')"></li>
 			<li><label>Back:</label></li>
 			<li><input type="file" name="back-img" accept="image/gif, image/jpeg, image/png" onchange="setBgImage(this, 'back')"></li>
+			<li><button id="cmd" onclick="saveBrochure()">Save IMG</button></li>
 		</ul>
 	</div>
-	<div id="working-area" onclick="lastFocus = null; console.log('clicked');">
+	<div id="working-area" onclick="lastFocus = null;">
 		
 	</div>
  </body>

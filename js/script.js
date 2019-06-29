@@ -298,6 +298,9 @@
 	            reader.readAsDataURL(input.files[0]);
 	        }	
 	    }
+	    function saveBrochure(event){
+			var worker = html2pdf().from(document.getElementById('working-area')).save();
+	    }
 		window.onload = function(){ 
 			document.getElementById('addText').addEventListener('click', addTextBox, false);
 			let btns = document.getElementsByClassName('addImage');
