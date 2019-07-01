@@ -185,18 +185,30 @@
 		function layout(event){
 			let div;
 			let iter = event.target.getAttribute('value', 0);
-			let workingArea = document.getElementById('working-area');
+			let workingArea = document.getElementById('pdf');
 			while(workingArea.hasChildNodes()){
 				workingArea.removeChild(workingArea.lastChild);
 			}
 			var brochure;
 			for(let j = 0; j < 2; j++){
-				if(iter != 1 || j != 1){
+				var side = (j == 0)?'front' : 'back';
+				//if(iter != 1 || j != 1){
 					brochure = document.createElement('div');
+					brochure.classList.add('brochure');
 					brochure.classList.add('brochure' + iter);
+					brochure.classList.add(side);
+					
+				//}
+				if(iter == 1 && j == 0){
+					var onep = document.createElement('div');
+					onep.id = 'onepage';
+					workingArea.appendChild(onep);
+				}else{
 					workingArea.appendChild(brochure);
 				}
-				var side = (j == 0)?'front' : 'back';
+				if(iter == 1){
+					onep.appendChild(brochure);
+				}
 				for(let i = 0; i < iter; i++){
 					div = document.createElement('div');
 					div.id = 'area' + (j*iter + i);
@@ -215,6 +227,16 @@
 				span.classList.remove('hidden');
 			else
 				span.classList.add('hidden');
+		}
+		function toggleVisible(event){
+			var target = event.target.parentElement.children[1];
+			if(target.classList.contains('dropped')){
+				target.classList.remove('dropped');
+				target.style.display = 'none';
+			}else{
+				target.classList.add('dropped');
+				target.style.display = 'block';
+			}
 		}
 		function readURL(input) {
 	        if (input.files && input.files[0]) {
@@ -299,7 +321,14 @@
 	        }	
 	    }
 	    function saveBrochure(event){
-			var worker = html2pdf().from(document.getElementById('working-area')).save();
+	    	var opt = {
+	    		margin: [ 0.5, 1, 0, 1],
+	    		filename: 'brochure.pdf',
+	    		image: { type: 'png', quality: 0.98 }, 
+	    		jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' },
+	    		pagebreak: { mode: 'avoid-all', after: '.front' }
+	    	};
+			var worker = html2pdf().set(opt).from(document.getElementById('pdf')).save();
 	    }
 		window.onload = function(){ 
 			document.getElementById('addText').addEventListener('click', addTextBox, false);
