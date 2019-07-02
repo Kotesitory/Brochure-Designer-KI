@@ -1,5 +1,13 @@
 @charset "UTF-8";
 
+body{
+	background-image: url('../img/background.jpg');
+	background-size: cover;
+	font-family: 'Roboto', sans-serif;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
 .dragme { 
     position:  absolute;
     left: 0;
@@ -11,8 +19,7 @@
     z-index: 100;
 }
 .text-box{
-	background: rgba(255,255,255,0.66); 
-    border: 2px  solid rgba(0,0,0,0.5); 
+	background: rgba(255,255,255,0.66);  
     border-radius: 4px; 
     width: 200px;
     padding: 8px;
@@ -35,13 +42,13 @@
 }
 .image-box{
 	padding: 10px;
-	width: 500px;
+	width: 200px;
 }
 .drag-area{
 	position: relative;
 	height: 19cm;
 	overflow: hidden;
-	background: transparent;
+	background-color: rgba(230,230,230,0.9);
 	background-repeat: no-repeat
 	background-attachment: scroll; 
 	background-position: 0 top;
@@ -89,15 +96,17 @@
     color:#fff;
 }
 #tool-box{
-	background-color: lightblue;
+	background-image: linear-gradient(#7cbcd4, #1b3f4c);
+	color: #DDF;
 	height: 100%;
 	width: 200px;
 	position: fixed;
 	z-index: 1;
 	top: 0;
 	left: 0;
+	padding-top: 0;
+	margin-top: 0;
 	overflow-x: hidden;
-	padding-top: 20px;
 	display: flex;
 	flex-direction: column;
 	align-content: center;
@@ -133,46 +142,65 @@ html{
 }
 .layoutChoice > img:hover{
 	cursor: pointer;
+	background-color: #3f5669;
+	opacity: 1.0;
+	
 }
 .layoutChoice > img{
-	width: 70%;
-	border-radius:20px;
-	background-color: lightgray;
+	width: 60%;
+	border-radius:15px;
+	background: #3f5669;
+	opacity: 0.5;
 }
 .layoutChoice{
 	text-align: center;
+	padding: 10px 0 10px 0;
 }
 ul{
 	list-style: none;
 	padding: 0;
+	margin: 0;
 	text-align: center;
 }
 .hidden{
 	display: none;
 }
 #font-size{
-	height: 50px;
 	width: 40px;
 	margin: 0;
 	padding: 0;
 	border: 0;
-	font-size: 20px;
+	font-size: 16px;
 	text-align: center;
+	color: rgba(125, 110, 100, 1);
+}
+#font-resize{
+	height: 28px;
+	display: flex;
+	flex-direction: row;
+	margin-top: 1px;
 }
 #font-size:focus{
 	border: 0;
 }
 .arrow-btn{
-	width: 25px;
-	height: 25px;
+	width: 20px;
+	height: 50%;
 	margin: 0;
 	padding: 0;
 	text-align: center;
 	font-weight: bold;
-	font-size: 18px;
-	background: #E8E8E8;
+	font-size: 15px;
+	background: #afadad;
 	border: 0;
-	color: #FFF;
+	color: #FFF; 
+}
+#textUtils{
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
 }
 .dropdown{
 	position: relative;
@@ -180,7 +208,7 @@ ul{
 }
 .dropdown a{
 	text-decoration: none;
-	color: #222;
+	color: #FFF;
 	font-size: 20px;
 	width: 100%;
 	display: block;
@@ -196,4 +224,73 @@ ul{
 .dropdown ul{
 	list-style: none;
 	display: none;
+}
+.dropdown ul li{
+	padding: 10px 0;
+}
+.dropped{
+	background-image: linear-gradient(#7bb4cc, #2b6e86);
+}
+.fas{
+	font-size: 15px;
+}
+#addText{
+	border-radius: 4px;
+	border-width: 0;
+	padding: 5px 7px;
+	color: #FFF;
+	background-color: #2f5a7d;
+	margin-left: 25px;
+	cursor: pointer;
+	opacity: 0.9;
+}
+#addText:hover{
+	opacity: 1.0;
+}
+.textStyler{
+	border-radius: 4px 0 0 4px;
+	border-width: 0;
+	color: rgba(125, 110, 100, 1);
+	width: 30px;
+	height: 30px;
+	font-family: serif;
+	margin: 0;
+	font-size: 18px;
+	font-weight: 400;
+	background-color: #FFF;
+	border-right: 1px solid #AAA;
+	border: 1px solid;
+	border-right-width: 0;
+}
+
+.custom-file-input{
+  	width: 85px;
+}
+.custom-file-input::-webkit-file-upload-button{
+  	border-width: 0;
+  	height: 30px;
+  	background-color: #2f5a7d;
+  	color: #FFF;
+  	border-radius: 4px;
+}
+.addImage{
+	width: 100%;
+	padding: 5px;
+	background-color: #2f5a7d;
+	border: 0;
+	color: white;
+}
+.addImage:hover{
+	cursor: pointer;
+	background-color: #0f3a5d;
+}
+.addImage:nth-child(1)
+{
+	border-radius: 6px 6px 0 0;
+	border-bottom: 1px solid #2f3a5d;
+}
+.addImage:nth-child(3)
+{
+	border-radius: 0 0 6px 6px;
+	border-top: 1px solid #2f3a5d;
 }

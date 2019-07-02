@@ -27,8 +27,9 @@
 		let lastFocus;
 		let fontSizeUpLimit = 100;
 		let fontSizeDownLimit = 10;
+		var bgColorPicker = new iro.ColorPicker('#color-picker-bg', {width: 150});
+		var textColorPicker = new iro.ColorPicker('#color-picker-text', {width: 150});
 
-		var colorPicker = new iro.ColorPicker('#color-picker-container', {width: 150});
 		function onColorChange(color, changes) {	
   			let radios = document.getElementsByName('target');	
   			let val;	
@@ -43,9 +44,22 @@
   					lastFocus.style.background = color.hexString;	
   			}	
 		}
-
-		colorPicker.on('color:change', onColorChange);
-
+		function onColorChangeBg(color, changes) {	
+  			let front = document.getElementsByName('front-bg')[0].checked;
+  			let back = document.getElementsByName('back-bg')[0].checked;
+  			if(front){
+  				let fronts = document.getElementsByClassName('drag-area-front');
+  				for(let i = 0; i < fronts.length; i++){
+  					fronts[i].style.backgroundColor = color.hexString;
+  				}
+  			}	
+  			if(back){
+  				let backs = document.getElementsByClassName('drag-area-back');
+  				for(let i = 0; i < backs.length; i++){
+  					backs[i].style.backgroundColor = color.hexString;
+  				}
+  			}
+		}
 		function setInputFilter(textbox, inputFilter) {
 		  	["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop"].forEach(function(event) {
 		    	textbox.addEventListener(event, function() {
@@ -108,6 +122,7 @@
 			div.parentElement.removeChild(div);
 		}
 		function addTextBox(event){
+			event.stopPropagation();
 			var dragable = document.createElement('div');
 			dragable.draggable = true;
 			dragable.classList.add('dragme');
@@ -152,6 +167,9 @@
 		    return false;
 		}
 		function addImage(event){
+			if( document.getElementById("file-input").files.length == 0 ){
+			    return;
+			}
 			let div = document.createElement('div');
 			div.draggable = true;
 			let img = document.createElement('img');
@@ -192,13 +210,10 @@
 			var brochure;
 			for(let j = 0; j < 2; j++){
 				var side = (j == 0)?'front' : 'back';
-				//if(iter != 1 || j != 1){
-					brochure = document.createElement('div');
-					brochure.classList.add('brochure');
-					brochure.classList.add('brochure' + iter);
-					brochure.classList.add(side);
-					
-				//}
+				brochure = document.createElement('div');
+				brochure.classList.add('brochure');
+				brochure.classList.add('brochure' + iter);
+				brochure.classList.add(side);
 				if(iter == 1 && j == 0){
 					var onep = document.createElement('div');
 					onep.id = 'onepage';
@@ -229,14 +244,23 @@
 				span.classList.add('hidden');
 		}
 		function toggleVisible(event){
-			var target = event.target.parentElement.children[1];
-			if(target.classList.contains('dropped')){
-				target.classList.remove('dropped');
-				target.style.display = 'none';
+			if(event.target.children.length != 0){
+				var target = event.target.parentElement.children[1];
 			}else{
-				target.classList.add('dropped');
+				var target = event.target.parentElement.parentElement.children[1];
+				event.stopPropagation();
+			}
+			let close = target.parentElement.classList.contains('dropped');
+			let dropped = document.getElementsByClassName('dropped')[0];
+			if(dropped){
+				dropped.classList.remove('dropped');
+				dropped.children[1].style.display = 'none';
+			}
+			if(!close){
+				target.parentElement.classList.add('dropped');
 				target.style.display = 'block';
 			}
+			
 		}
 		function readURL(input) {
 	        if (input.files && input.files[0]) {
@@ -246,8 +270,8 @@
 	            	let img = document.createElement('img');
 	                img.src = e.target.result;
 	                img.id = 'preview';
-					img.width = 150
-	                img.height = 200;
+					img.width = 160;
+					img.style.borderRadius = '10px';
 	                let div = document.getElementById('img-preview');
 	                while(div.hasChildNodes()){
 						div.removeChild(div.lastChild);
@@ -333,6 +357,8 @@
 		window.onload = function(){ 
 			document.getElementById('addText').addEventListener('click', addTextBox, false);
 			let btns = document.getElementsByClassName('addImage');
+			textColorPicker.on('color:change', onColorChange);
+			bgColorPicker.on('color:change', onColorChangeBg);
 			for(var i = 0; i < btns.length; i++){
 				btns[i].addEventListener('click', addImage, false);
 			}
