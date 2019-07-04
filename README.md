@@ -7,6 +7,8 @@ It allows users to create and save custom brochures by adding, positioning and c
 Created by:
 
 * Stefan Kotevski
+* Gligor Atanasovski
+* Aida Masovic
 
 ## Getting Started
 
