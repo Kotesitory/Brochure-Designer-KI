@@ -29,6 +29,8 @@
 		let fontSizeDownLimit = 10;
 		var bgColorPicker = new iro.ColorPicker('#color-picker-bg', {width: 150});
 		var textColorPicker = new iro.ColorPicker('#color-picker-text', {width: 150});
+		var first = true;
+		var last = 0;
 
 		function onColorChange(color, changes) {	
   			let radios = document.getElementsByName('target');	
@@ -201,9 +203,24 @@
 			document.getElementById('working-area').appendChild(div);
 		}
 		function layout(event){
+			var drags = document.getElementsByClassName('dragme');
 			let div;
 			let iter = event.target.getAttribute('value', 0);
 			let workingArea = document.getElementById('pdf');
+			if(last == iter){
+				return;
+			}else{
+				last = iter;
+			}
+			if(!first){
+				if(drags.length > 0)
+					var proceed = confirm("Changing layout disgards your current brochure and you must start over.\n\n Are you sure you want to proceed?");
+			}else{
+				first = false;
+			}
+			if(proceed == false){
+				return;
+			}
 			while(workingArea.hasChildNodes()){
 				workingArea.removeChild(workingArea.lastChild);
 			}
@@ -345,6 +362,9 @@
 	        }	
 	    }
 	    function saveBrochure(event){
+	    	if(document.getElementById('pdf').children.length == 0){
+	    		return;
+	    	}
 	    	var opt = {
 	    		margin: [ 0.5, 1, 0, 1],
 	    		filename: 'brochure.pdf',
@@ -365,6 +385,13 @@
 			document.getElementById('one-part').addEventListener('click', layout, false);
 			document.getElementById('two-part').addEventListener('click', layout, false);
 			document.getElementById('three-part').addEventListener('click', layout, false);
+			window.addEventListener("beforeunload", function (e) {
+		        var confirmationMessage = 'It looks like you have been editing something. '
+		                                + 'If you leave before saving, your changes will be lost.';
+
+		        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+		        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+		    });
 			document.body.addEventListener('keydown', function(e) {
     			if(e.key == "Escape"){
     				document.activeElement.blur();
