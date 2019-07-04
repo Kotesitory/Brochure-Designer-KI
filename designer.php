@@ -1,0 +1,85 @@
+ <?php
+ session_start();
+ $username = '';
+ if(isset($_SESSION['username'])){
+ 	$username = $_SESSION['username'];
+ }
+ ?>
+
+ <!DOCTYPE html>
+ <html>
+ <head>
+ 	<title>Test</title>
+	<meta charset=utf-8 />
+	<script src="js/colorpicker.js"></script>
+ 	<script src="js/script.js"></script>
+ 	<script type="text/javascript" src="js/html2canvas.js"></script>
+ 	<script type="text/javascript" src="js/jspdf.min.js"></script>
+ 	<script src="js/html2pdf.bundle.min.js"></script>
+ 	<link rel="stylesheet" type="text/css" href="./css/styles.css">
+ 	<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+ 	<!-- <link rel="stylesheet" type="text/css" href="fonts/fontawesome/css/all.css"> -->
+ </head>
+<body style="height: 100%;">
+	<div id="tool-box">
+		<ul>
+			<li id="selectLayout" class="dropdown"><a href='#' onclick="toggleVisible(event);">Layout <i class="fas fa-map" onclick="toggleVisible(event);"></i></a>
+				<ul id="layoutOpts">
+					<li class="layoutChoice" id="one-part"><img src="img/one-piece.png" alt="One Part" value='1'></li>
+					<li class="layoutChoice" id="two-part"><img src="img/two-piece.png" alt="Two Part" value='2'></li>
+					<li class="layoutChoice" id="three-part"><img src="img/three-piece.png" alt="Three Part" value='3'></li>
+				</ul>
+			</li>
+			<li id="selectText" class="dropdown"><a href="#" onclick="toggleVisible(event);">Text <i class="fas fa-text-height" onclick="toggleVisible(event);"></i> <button id="addText">Text Box</button></a>
+				<ul>
+					<li>
+						<div id="textUtils">
+							<button onclick="boldFont(event)" style="font-weight: 1000;" class="textStyler">B</button>
+							<button onclick="italicFont(event)" style="font-style: italic; border-radius: 0; border-right-width: 1px;" class="textStyler">I</button>
+							<div id="font-resize">
+								<input type="text" onchange="resizeFont(event);" id="font-size">
+								<div style="display: inline-flex; flex-direction: column; padding: 0; justify-content: space-around;">
+									<button class="arrow-btn" onclick="sizeUpFont(event)">&#708;</button>
+									<button class="arrow-btn" onclick="sizeDownFont(event)">&#709;</button>
+								</div>
+							</div>
+						</div>
+					</li>
+					<li><div id="color-picker-text" style="display: inline-block;"></div></li>
+					<li><input type="radio" name="target" value="0" checked>Font
+						<input type="radio" name="target" value="1">Background</li>
+				</ul>
+			</li>
+			<li id="selectImage" class="dropdown"><a href="#" onclick="toggleVisible(event);">Image <i class="far fa-image" onclick="toggleVisible(event);"></i></a>
+				<ul class="">
+					<li><input type="file" id="file-input" class="custom-file-input" name="filename" accept="image/gif, image/jpeg, image/png" onchange="readURL(this);"></li>
+					<li><div id="img-preview"></div></li>
+					<li>
+						<div style="display: flex; flex-direction: column; width: 60%; margin: 0 auto;">
+							<button class="addImage" value="1">Sharp <i class="fas fa-square-full" style="float: right;"></i></button>
+							<button class="addImage" value="2">Rounded <i class="fas fa-square" style="float: right;"></i></button>
+							<button class="addImage" value="3">Circle <i class="fas fa-circle" style="float: right;"></i></button>
+						</div>
+					</li>
+				</ul>
+			</li>
+			<li id="selectBg" class="dropdown"><a href="#" onclick="toggleVisible(event);">Background <i class="fas fa-mountain" onclick="toggleVisible(event);"></i></a>
+				<ul>
+					<li><label>Front: </label><input type="file" name="frong-img" class="custom-file-input" accept="image/gif, image/jpeg, image/png" onchange="setBgImage(this, 'front')"></li>
+					<li><label>Back: </label><input type="file" name="back-img" class="custom-file-input" accept="image/gif, image/jpeg, image/png" onchange="setBgImage(this, 'back')"></li>
+					<li><div id="color-picker-bg" style="display: inline-block;"></div></li>
+					<li><input type="checkbox" name="front-bg" checked>Font
+						<input type="checkbox" name="back-bg" checked>Back</li>
+				</ul>
+			</li>
+			<li><button id="save" onclick="saveBrochure()">Save Brochure</button></li>
+			<li><a href="includes/logout.php" id="logout">Log out</a></li>
+		</ul>
+	</div>
+	<div id="working-area" onclick="lastFocus = null;">
+		<div id="pdf">
+			
+		</div>
+	</div>
+ </body>
+ </html>
